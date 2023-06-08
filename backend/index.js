@@ -1,6 +1,7 @@
 import express from "express";
-const app = express();
 import mysql from "mysql";
+const app = express();
+app.use(express.json());
 
 const db = mysql.createConnection({
   host: "localhost",
@@ -8,7 +9,7 @@ const db = mysql.createConnection({
   password: "Root@1234",
   database: "test",
 });
-
+//get info from table in db (the schema is "test" , the table is "books" that we created by mysql workbench)
 app.get("/", (req, res) => {
   res.json("hello");
 });
@@ -23,6 +24,22 @@ app.get("/books", (req, res) => {
     return res.json(data);
   });
 });
+
+//mysql creating new data (add a new book to "books" table)
+app.post("/books", (req, res) => {
+  const { title, desc, cover } = req.body;
+  const values = [title, desc, cover];
+  const q = "INSERT INTO books (title, `desc`, cover) VALUES (?)";
+
+  db.query(q, [values], (err, data) => {
+    if (err) {
+      console.log(err);
+      return res.json(err);
+    }
+    return res.json(data);
+  });
+});
+
 
 app.listen(5000, () => {
   console.log("Connected to backend.");
