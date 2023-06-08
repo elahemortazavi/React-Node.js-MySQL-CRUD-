@@ -30,9 +30,9 @@ app.get("/books", (req, res) => {
 
 //mysql creating new data (add a new book to "books" table)
 app.post("/books", (req, res) => {
-  const { title, desc, cover } = req.body;
-  const values = [title, desc, cover];
-  const q = "INSERT INTO books (title, `desc`, cover) VALUES (?)";
+  const { title, desc, cover, price } = req.body;
+  const values = [title, desc, cover, price];
+  const q = "INSERT INTO books (title, `desc`, cover, price) VALUES (?)";
 
   db.query(q, [values], (err, data) => {
     if (err) {
