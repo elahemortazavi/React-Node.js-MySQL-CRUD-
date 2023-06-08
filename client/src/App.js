@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Books from "./pages/Books";
 import Add from "./pages/Add";
 import Update from "./pages/Update";
+import "./style.scss";
+//not sure if style.scss should import here?
 
 function App() {
   return (
