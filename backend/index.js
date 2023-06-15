@@ -3,8 +3,8 @@ import mysql from "mysql";
 import cors from "cors";
 
 const app = express();
-app.use(express.json());
 app.use(cors());
+app.use(express.json());
 
 const db = mysql.createConnection({
   host: "localhost",
@@ -12,7 +12,7 @@ const db = mysql.createConnection({
   password: "Root@1234",
   database: "test",
 });
-//get info from table in db (the schema is "test" , the table is "books" that we created by mysql workbench)
+
 app.get("/", (req, res) => {
   res.json("hello");
 });
@@ -28,21 +28,49 @@ app.get("/books", (req, res) => {
   });
 });
 
-//mysql creating new data (add a new book to "books" table)
 app.post("/books", (req, res) => {
-  const { title, desc, cover, price } = req.body;
-  const values = [title, desc, cover, price];
-  const q = "INSERT INTO books (title, `desc`, cover, price) VALUES (?)";
+  const q = "INSERT INTO books(`title`, `desc`, `price`, `cover`) VALUES (?)";
+
+  const values = [
+    req.body.title,
+    req.body.desc,
+    req.body.price,
+    req.body.cover,
+  ];
 
   db.query(q, [values], (err, data) => {
-    if (err) {
-      console.log(err);
-      return res.json(err);
-    }
+    if (err) return res.send(err);
     return res.json(data);
   });
 });
 
+app.delete("/books/:id", (req, res) => {
+  const bookId = req.params.id;
+  const q = " DELETE FROM books WHERE id = ? ";
+
+  db.query(q, [bookId], (err, data) => {
+    if (err) return res.send(err);
+    return res.json(data);
+  });
+});
+
+app.put("/books/:id", (req, res) => {
+  const bookId = req.params.id;
+  const q =
+    "UPDATE books SET `title`= ?, `desc`= ?, `price`= ?, `cover`= ? WHERE id = ?";
+
+  const values = [
+    req.body.title,
+    req.body.desc,
+    req.body.price,
+    req.body.cover,
+  ];
+
+  db.query(q, [...values, bookId], (err, data) => {
+    if (err) return res.send(err);
+    return res.json(data);
+  });
+});
 
 app.listen(5000, () => {
   console.log("Connected to backend.");
