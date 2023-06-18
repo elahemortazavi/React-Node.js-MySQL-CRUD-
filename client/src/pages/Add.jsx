@@ -52,7 +52,7 @@ const Add = () => {
         onChange={handleChange}
       />
       <input
-        type="text"
+        type="file"
         placeholder="Book cover"
         name="cover"
         onChange={handleChange}
